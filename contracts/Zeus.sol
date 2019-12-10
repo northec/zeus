@@ -3,20 +3,20 @@ pragma solidity ^0.5.0;
 contract Zeus {
     
     //balance
-    uint balance;//game balance
-    uint gBalance;//this game balance
-    uint dBalance;//today balance
+    uint public balance;//game balance
+    uint public gBalance;//this game balance
+    uint public dBalance;//today balance
     
     //divide into
-    uint8 digitalDiv;//digital game divide
-    uint8 parityDiv;//parity divide
+    ufixed public digitalDiv;//digital game divide
+    ufixed public parityDiv;//parity divide
     
     //join price
-    uint8 digitalPrice;//join game ETH price
-    uint8 cardPrice;//bug card ETH price
+    uint public digitalPrice;//join game ETH price
+    uint public cardPrice;//bug card ETH price
     
     //card can buy count
-    uint8 canBuyCount;
+    uint8 public canBuyCount;
     
     constructor() public {
     balance=0;//game balance
