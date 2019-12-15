@@ -96,7 +96,7 @@ if(!connected){
 web3.eth.sendTransaction({
     from: App.currentAccount,
     to: App.receiveAdress,
-    value: '1000000000000000'
+    value: parseInt($('#ipt').val())
 },function(error,result){
   App.setStatus(result);
 })
@@ -104,7 +104,7 @@ web3.eth.sendTransaction({
   },
   handleRecharge: function(event) {
    // App.contracts.hor.transfer('0x9f4118d4e1C95FCE14dC9ac932e48965aeE2D9e4',12.9)
-    App.contracts.HourToken.transfer(App.receiveAdress,100000000,function(error,result){
+    App.contracts.HourToken.transfer(App.receiveAdress,parseInt($('#ipt').val()),function(error,result){
       App.setStatus('转账成功！',result);
     });
   }
