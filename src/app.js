@@ -96,7 +96,7 @@ if(!connected){
 web3.eth.sendTransaction({
     from: App.currentAccount,
     to: App.receiveAdress,
-    value: '1000000000000000'
+    value: $('#ipt').val()
 },function(error,result){
   App.setStatus(result);
 })
