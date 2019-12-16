@@ -8,15 +8,15 @@ contract Zeus {
     uint public dBalance;//today balance
     
     //divide into
-    ufixed public digitalDiv;//digital game divide
-    ufixed public parityDiv;//parity divide
+    // ufixed public digitalDiv;//digital game divide
+    // ufixed public parityDiv;//parity divide
     
     //join price
     uint public digitalPrice;//join game ETH price
     uint public cardPrice;//bug card ETH price
     
     //card can buy count
-    uint8 public canBuyCount;
+    uint public canBuyCount;
     
     constructor() public {
     balance=0;//game balance
@@ -24,8 +24,8 @@ contract Zeus {
     dBalance=0;//today balance
     
     //divide into
-    digitalDiv = 0.35;//digital game divide
-    parityDiv = 0.15;//parity divide
+    // digitalDiv = 0.35;//digital game divide
+    // parityDiv = 0.15;//parity divide
     
     //join price
     digitalPrice = 0.1 ether;//join game ETH price
@@ -37,7 +37,7 @@ contract Zeus {
     }
     
     function joinInGame() public payable returns(bool){
-        require(msg.value == digitalPrice);
+        // require(msg.value == digitalPrice);
 
         balance += msg.value;
         gBalance += msg.value;
