@@ -36,5 +36,14 @@ contract Zeus {
        
     }
     
+    function joinInGame() public payable returns(bool){
+        require(msg.value == digitalPrice);
+
+        balance += msg.value;
+        gBalance += msg.value;
+        dBalance += msg.value;
+
+        return true;
+    }
     
 }
