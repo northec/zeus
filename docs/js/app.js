@@ -95,6 +95,18 @@ setStatus: function(status,data){
       var adr = '0x1A722E28Fc92FE9A49919Bae56265b99400e27Ea';
       App.contracts.king = web3.eth.contract(abi).at(adr); 
       App.setStatus('king合约初始化完毕'); 
+
+       //初始化游戏奖池
+        var balancetotal=0;
+      
+        App.contracts.king.getBalance(function(error,result){
+          App.setStatus(result);
+          balancetotal = result.c[0] / 10**18;
+        });
+        App.contracts.king.getKinger(function(error,result){
+          App.setStatus(result);
+          $("#winner").html("total balance:"+balancetotal+"<br> current winner:"+result[0]+"<br>winner ko count:"+result[1].toString()+"<br>winner balance:"+(result[2] / 10**18).toString());
+        });
     });
 
     // $.getJSON('king.json', function(data) {
@@ -113,10 +125,20 @@ setStatus: function(status,data){
     $(document).on('click', '.btn_HOR', App.handleRecharge);
     $(document).on('click', '.btnKO', App.handleKO);
     App.setStatus('增加按钮点击事件','');
+
+
+   
   },
-  handleKO: function(){
-    App.contracts.king.ko({from:App.currentAccount},function(error,result){
+  handleKO: function(event){
+    var count =0;
+    count = web3.toWei(parseInt($(event.target).data('votecount')) * 0.01);
+    App.setStatus(count);
+    App.contracts.king.ko({from:App.currentAccount,value:count},function(error,result){
       App.setStatus(result);
+      App.contracts.king.getKinger(function(error,result){
+        App.setStatus(result);
+        $("#winner").html("winner:"+result[0]+"<br>count:"+result[1].toString()+"<br>balance:"+(result[2] / 10**18).toString());
+      });
     });    
   },
   handleNotice: function(){
@@ -132,7 +154,7 @@ web3.eth.sendTransaction({
   },
   handleRecharge: function(event) {
    // App.contracts.hor.transfer('0x9f4118d4e1C95FCE14dC9ac932e48965aeE2D9e4',12.9)
-    App.contracts.HourToken.transfer(App.receiveAdress,web3.toWei($('#ipt').val()),function(error,result){
+    App.contracts.HourToken.transfer(App.receiveAdress,web3.toWei($('#ipt').val(),"kwei"),function(error,result){
       App.setStatus('转账成功！',result);
     });
   }
