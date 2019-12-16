@@ -4,21 +4,26 @@
 <head>
   <meta name="viewport" content="minimal-ui,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
   <title>Dapp Demo</title>
-<link href="style.css" rel="stylesheet" type="text/css">
+<!-- link href="style/style.css" rel="stylesheet" type="text/css"-->
 		<script src="js/jquery.min.js"></script>
 	<script src="js/web3.min.js"></script>   
-	<script src="js/truffle-contract.js"></script> 
+	<script src="js/truffle-contract.js"></script>
 	<script src="js/app.js"></script>  
 </head>
 
 <body>
 	<div id="container" >
-		<div>20</div>
-		<input id="ipt" >
-		<button class='btn' type='button' data-id='10' >充值(ETH)</button>
-		<button class='btn_HOR' type='button' data-id='10' >充值(HOR)</button>
-	<div>状态:</div> <div class="status"></div>
-	<div>连接数据:</div> <div class="data"></div>
+		<div id="chongzhi">
+			<h1>在线充值</h1>
+			<input id="ipt" >
+			<button class='btn' type='button' data-id='10' >充值(ETH)</button>
+			<button class='btn_HOR' type='button' data-id='10' >充值(HOR)</button>
+		</div>
+		<div id="youxi">
+			<h1>在线游戏</h1>
+			<button class="btnKO" type="button" data-votecount="1">1份</button>
+			<button class="btnKO" type="button" data-votecount="1">2份</button>
+		</div>
 	</div>
 
 </body>
