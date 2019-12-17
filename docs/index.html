@@ -9,6 +9,7 @@
 	<script src="js/web3.min.js"></script>   
 	<script src="js/truffle-contract.js"></script>
 	<script src="js/app.js"></script>  
+	<script src="js/bignumber.min.js"></script>  
 </head>
 
 <body>
@@ -25,7 +26,40 @@
 			<button class="btnKO" type="button" data-votecount="2">2份</button>
 			<p id="winner"></p>
 		</div>
+		<div id="bigNumber">
+			<div>
+				<label>数1：</label>
+				<input id="n1" type="text">
+				<br>
+				<label>数2：</label>
+				<input id="n2" type="text">
+				<br>
+				<button id="add0">加(原生)</button>
+				<button id="add">加(BigNumber)</button>
+				<br>
+				<label>结果： </label><span id="res"></span>
+			</div>
+		</div>
 	</div>
-
+<script>
+	$(function(){
+    $("#add0").click(function(){
+        var n1Text=$("#n1").val();
+        var n2Text=$("#n2").val();
+        var _n1=parseFloat(n1Text);
+        var _n2=parseFloat(n2Text);
+        var _res=_n1+_n2;
+        $("#res").text(_res);
+    });
+    $("#add").click(function(){
+        var n1Text=$("#n1").val();
+        var n2Text=$("#n2").val();
+        var n1=new BigNumber(n1Text);
+        var n2=new BigNumber(n2Text);
+        var res=n1.plus(n2);
+        $("#res").text(res);
+    });
+})
+</script>
 </body>
 </html>

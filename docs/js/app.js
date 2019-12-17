@@ -30,7 +30,13 @@ setStatus: function(status,data){
   //   container.find('.status').append('<br>'+status);
   // if (typeof data != 'undefined')
   //   container.find('.data').append('<br>'+data);
-  console.log(Date.now());
+  var today=new Date();
+  var h=today.getHours();
+  var m=today.getMinutes();
+  var s=today.getSeconds();
+  var ms =today.getUTCMilliseconds();
+
+  console.log(">>>"+h+":"+m+":"+s+":"+ms);
   if (typeof status != 'undefined' && status != ''){
     console.log(status);
   }
@@ -99,16 +105,7 @@ setStatus: function(status,data){
       App.setStatus('king合约初始化完毕'); 
 
        //初始化游戏奖池
-        var balancetotal=0;
-      
-        App.contracts.king.getBalance(function(error,result){
-          App.setStatus(result);
-          balancetotal = result.c[0] / 10**18;
-        });
-        App.contracts.king.getKinger(function(error,result){
-          App.setStatus(result);
-          $("#winner").html("total balance:"+balancetotal+"<br> current winner:"+result[0]+"<br>winner ko count:"+result[1].toString()+"<br>winner balance:"+(result[2] / 10**18).toString());
-        });
+      App.updatePanel();
     });
     
     return App.bindEvents();
@@ -123,16 +120,39 @@ setStatus: function(status,data){
 
    
   },
+  updatePanel:function(){
+    //初始化游戏奖池
+    var balancetotal=0;
+    var komax = 0;
+    var winner;
+
+    App.contracts.king.getBalance(function(error,result){
+      balancetotal = result / 10**18;
+      App.setStatus(balancetotal);
+    });
+    App.contracts.king.komax(function(error,result){
+      komax= result / 10**18;
+      App.setStatus(komax);
+    });
+    App.contracts.king.getKinger(function(error,result){
+      App.setStatus(result.toString());
+      winner = result[0];
+      winner = winner.substring(0,4) + "......" + winner.slice(-4);
+      $("#winner").html("奖池:"+balancetotal
+            +"ETH<br> 单注最高:"+komax
+            +"ETH<br> 王者荣耀:"+winner
+            +"<br>参与次数:"+result[1].toString()
+            +"<br>总参额度:"+(result[2] / 10**18).toString()+"ETH");
+    });
+  },
   handleKO: function(event){
     var count =0;
     count = web3.toWei(parseInt($(event.target).data('votecount')) * 0.01);
     App.setStatus(count);
     App.contracts.king.ko({from:App.currentAccount,value:count},function(error,result){
       App.setStatus(result);
-      App.contracts.king.getKinger(function(error,result){
-        App.setStatus(result);
-        $("#winner").html("winner:"+result[0]+"<br>count:"+result[1].toString()+"<br>balance:"+(result[2] / 10**18).toString());
-      });
+    //初始化游戏奖池
+    App.updatePanel();
     });    
   },
   handleNotice: function(){
