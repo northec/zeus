@@ -86,7 +86,9 @@ setStatus: function(status,data){
   initContract: function() {
     $.getJSON('js/HOURToken.json', function(data) {
       var abi = data;
-      var adr = '0x3592C65FeCd68aCb68A9b5A506AF501c39162954';
+      //ropstan:0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f
+      //ethereum:0x3592C65FeCd68aCb68A9b5A506AF501c39162954
+      var adr = '0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
       App.contracts.HourToken = web3.eth.contract(abi).at(adr); 
       App.setStatus('hor合约初始化完毕'); 
     });
@@ -108,14 +110,6 @@ setStatus: function(status,data){
           $("#winner").html("total balance:"+balancetotal+"<br> current winner:"+result[0]+"<br>winner ko count:"+result[1].toString()+"<br>winner balance:"+(result[2] / 10**18).toString());
         });
     });
-
-    // $.getJSON('king.json', function(data) {
-    //   App.contracts.king = TruffleContract(data);
-    //   App.contracts.king.setProvider(App.web3Provider);
-    //   App.setStatus('king合约初始化完毕'); 
-    //   //App.setStatus(data);
-    // });
-    
     
     return App.bindEvents();
   },
@@ -142,19 +136,20 @@ setStatus: function(status,data){
     });    
   },
   handleNotice: function(){
-    // 使用事件发生器
-web3.eth.sendTransaction({
-    from: App.currentAccount,
-    to: App.receiveAdress,
-    value: web3.toWei($('#ipt').val())
-},function(error,result){
-  App.setStatus(result);
-})
-
+    // ETH充值
+    var value = $('#ipt').val()*10**18;
+    web3.eth.sendTransaction({
+        from: App.currentAccount,
+        to: App.receiveAdress,
+        value: value
+    },function(error,result){
+      App.setStatus(result);
+    })
   },
   handleRecharge: function(event) {
-   // App.contracts.hor.transfer('0x9f4118d4e1C95FCE14dC9ac932e48965aeE2D9e4',12.9)
-    App.contracts.HourToken.transfer(App.receiveAdress,web3.toWei($('#ipt').val(),"kwei"),function(error,result){
+    var value = $('#ipt').val()*10**8;
+    App.setStatus(value);
+    App.contracts.HourToken.transfer(App.receiveAdress,value,function(error,result){
       App.setStatus('转账成功！',result);
     });
   }
