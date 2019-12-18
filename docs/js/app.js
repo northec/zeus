@@ -86,7 +86,9 @@ setStatus: function(status,data){
       App.setStatus('','cur:'+App.currentAccount);
       App.setStatus('','rev:'+App.receiveAdress);
     });
-    
+    ethereum.on('accountsChanged', App.initWeb3);
+    ethereum.on('networkChanged', App.initWeb3);
+
     return App.initContract(); 
   },
   initContract: function() {
@@ -125,7 +127,7 @@ setStatus: function(status,data){
   updatePanel:function(){
     //网络及钱包信息
     chainId = web3.currentProvider.chainId;
-    $("#netinfo").html("当前网络状态:"+chainId == 0x1 ? "主网" : chainId == 0x3 ?"RopStan测试网络":("未知网络"+chainId));
+    $("#netinfo").html("当前网络状态:"+(chainId == 0x1 ? "主网" : (chainId == 0x3 ?"RopStan测试网络":("未知网络"+chainId))));
     $("#walletinfo").html("当前钱包:0x...."+ web3.eth.accounts[0].slice(-4));
     //初始化游戏奖池
     var balancetotal=0;
