@@ -94,7 +94,7 @@ setStatus: function(status,data){
       var abi = data;
       //ropstan:0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f
       //ethereum:0x3592C65FeCd68aCb68A9b5A506AF501c39162954
-      var adr = '0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
+      var adr = web3.currentProvider.chainid == "0x1"?'0x3592C65FeCd68aCb68A9b5A506AF501c39162954':'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
       App.contracts.HourToken = web3.eth.contract(abi).at(adr); 
       App.setStatus('hor合约初始化完毕'); 
     });
