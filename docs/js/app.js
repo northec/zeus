@@ -3,6 +3,7 @@ App = {
   contracts: {},
   currentAccount:null,
   receiveAdress:'0x96Bb5438E0bE3bB591dF03312249cd301EED0B44',
+  network:null,//网络识别码1主网3ropstan
 
   init: async function() {
     // Load pets.
@@ -83,20 +84,28 @@ setStatus: function(status,data){
     }
 
     App.currentAccount = accounts[0];
+    // web3.version.getNetwork(function(err,res){console.log("network1:"+res)})
+    web3.version.getNetwork(function(err,res){
+      App.network = res;
+      App.setStatus('network2:'+App.network);
       App.setStatus('','cur:'+App.currentAccount);
       App.setStatus('','rev:'+App.receiveAdress);
+      ethereum.on('accountsChanged', App.initWeb3);
+      ethereum.on('networkChanged', App.initWeb3);
+  
+      return App.initContract();   
+    })    
     });
-    ethereum.on('accountsChanged', App.initWeb3);
-    ethereum.on('networkChanged', App.initWeb3);
-
-    return App.initContract(); 
   },
   initContract: function() {
     $.getJSON('js/HOURToken.json', function(data) {
       var abi = data;
       //ropstan:0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f
       //ethereum:0x3592C65FeCd68aCb68A9b5A506AF501c39162954
-      var adr = web3.currentProvider.chainId == "0x1"?'0x3592C65FeCd68aCb68A9b5A506AF501c39162954':'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
+      var adr ;
+      // adr = web3.currentProvider.chainId == "0x1"?'0x3592C65FeCd68aCb68A9b5A506AF501c39162954':'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
+      adr = (App.network == 1) ?'0x3592C65FeCd68aCb68A9b5A506AF501c39162954':'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
+
       App.setStatus("cur chainid:"+web3.currentProvider.chainId);
       App.setStatus("cur hor address:"+adr);
       App.contracts.HourToken = web3.eth.contract(abi).at(adr); 
@@ -127,7 +136,8 @@ setStatus: function(status,data){
   updatePanel:function(){
     //网络及钱包信息
     chainId = web3.currentProvider.chainId;
-    $("#netinfo").html("当前网络状态:"+(chainId == 0x1 ? "主网" : (chainId == 0x3 ?"RopStan测试网络":("未知网络"+chainId))));
+    // $("#netinfo").html("当前网络状态:"+(chainId == 0x1 ? "主网" : (chainId == 0x3 ?"RopStan测试网络":("未知网络"+chainId))));
+    $("#netinfo").html("当前网络状态:"+(App.network == 1 ? "主网" : (App.network == 3 ?"RopStan测试网络":("未知网络"+App.network))));
     $("#walletinfo").html("当前钱包:0x...."+ web3.eth.accounts[0].slice(-4));
     //初始化游戏奖池
     var balancetotal=0;
