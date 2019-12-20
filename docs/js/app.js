@@ -136,8 +136,11 @@ setStatus: function(status,data){
     //网络及钱包信息
     chainId = web3.currentProvider.chainId;
     // $("#netinfo").html("当前网络状态:"+(chainId == 0x1 ? "主网" : (chainId == 0x3 ?"RopStan测试网络":("未知网络"+chainId))));
-    $("#netinfo").html("当前网络状态:"+(App.network == 1 ? "主网" : (App.network == 3 ?"RopStan测试网络":("未知网络"+App.network))));
-    $("#walletinfo").html("当前钱包:0x...."+ web3.eth.accounts[0].slice(-4));
+    $("#netinfo").html("当前网络状态:"+(App.network == 1 ? "主网" : (App.network == 3 ?"RopStan测试网络":("未知网络"+App.network))));    
+    web3.eth.getBalance(web3.eth.accounts[0],function(e,r){
+      $("#walletinfo").html("当前钱包:0x...."+ web3.eth.accounts[0].slice(-4)
+                            + "(余额："+r/10**18+")");
+    });
     //初始化游戏奖池
     var balancetotal=0;
     var komax = 0;
