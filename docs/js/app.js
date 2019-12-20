@@ -102,10 +102,14 @@ setStatus: function(status,data){
       var abi = data;
       //ropstan:0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f
       //ethereum:0x3592C65FeCd68aCb68A9b5A506AF501c39162954
+<<<<<<< HEAD
       var adr ;
       // adr = web3.currentProvider.chainId == "0x1"?'0x3592C65FeCd68aCb68A9b5A506AF501c39162954':'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
       adr = (App.network == 1) ?'0x3592C65FeCd68aCb68A9b5A506AF501c39162954':'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
 
+=======
+      var adr = web3.currentProvider.chainId == "0x3"?'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f':'0x3592C65FeCd68aCb68A9b5A506AF501c39162954';
+>>>>>>> bdfa8bd3d35718a3cf7e310b150647504071ea0b
       App.setStatus("cur chainid:"+web3.currentProvider.chainId);
       App.setStatus("cur hor address:"+adr);
       App.contracts.HourToken = web3.eth.contract(abi).at(adr); 
