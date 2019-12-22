@@ -54,18 +54,23 @@ setStatus: function(status,data){
       // Request account access
       await window.ethereum.enable();
     } catch (error) {
-      // User denied account access...
+      // User denied account  access...
       App.setStatus("User denied account access");
     }
   }
   // Legacy dapp browsers...
-  else if (window.web3) {
-    App.web3Provider = window.web3.currentProvider;
-  }
+  // else if (window.web3) {
+  //   App.web3Provider = window.web3.currentProvider;
+  // }
   // If no injected web3 instance is detected, fall back to Ganache
   else {
     //App.web3Provider = new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/ws");
     //App.web3Provider = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws'));
+    App.setStatus("Looks like you need a Dapp browser to get started.<br>Consider installing MetaMask!");
+    $("#msg").html('Looks like you need a Dapp browser to get started.<br>Consider installing MetaMask!');
+    $("#msg").show();
+    $("#container").hide();
+    return;
   }
   web3 = new Web3(App.web3Provider);
 // var connected = web3.isConnected();
@@ -126,11 +131,7 @@ setStatus: function(status,data){
     
     $(document).on('click', '.btn', App.handleNotice);
     $(document).on('click', '.btn_HOR', App.handleRecharge);
-    $(document).on('click', '.btnKO', App.handleKO);
-    App.setStatus('增加按钮点击事件','');
-
-
-   
+    $(document).on('click', '.btnKO', App.handleKO); 
   },
   updatePanel:function(){
     //网络及钱包信息
@@ -148,14 +149,11 @@ setStatus: function(status,data){
 
     App.contracts.king.getBalance(function(error,result){
       balancetotal = result / 10**18;
-      App.setStatus(balancetotal);
     });
     App.contracts.king.komax(function(error,result){
       komax= result / 10**18;
-      App.setStatus(komax);
     });
     App.contracts.king.getKinger(function(error,result){
-      App.setStatus(result.toString());
       winner = result[0];
       winner = winner.substring(0,4) + "......" + winner.slice(-4);
       $("#winner").html("奖池:"+balancetotal
@@ -171,8 +169,8 @@ setStatus: function(status,data){
     App.setStatus(count);
     App.contracts.king.ko({from:App.currentAccount,value:count},function(error,result){
       App.setStatus(result);
-    //初始化游戏奖池
-    App.updatePanel();
+      //初始化游戏奖池
+      App.updatePanel();
     });    
   },
   handleNotice: function(){
