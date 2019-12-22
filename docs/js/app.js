@@ -57,6 +57,7 @@ setStatus: function(status,data){
       // User denied account  access...
       App.setStatus("User denied account access");
     }
+    $("#msg").html('window.ethereum');
   }
   // Legacy dapp browsers...
   // else if (window.web3) {
@@ -64,8 +65,6 @@ setStatus: function(status,data){
   // }
   // If no injected web3 instance is detected, fall back to Ganache
   else {
-    //App.web3Provider = new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/ws");
-    //App.web3Provider = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws'));
     App.setStatus("Looks like you need a Dapp browser to get started.<br>Consider installing MetaMask!");
     $("#msg").html('Looks like you need a Dapp browser to get started.<br>Consider installing MetaMask!');
     $("#msg").show();
@@ -73,14 +72,7 @@ setStatus: function(status,data){
     return;
   }
   web3 = new Web3(App.web3Provider);
-// var connected = web3.isConnected();
-// if(!connected){
-//   console.log("node not connected!");
-//   App.setStatus("node not connected!","");
-// }else{
-//   console.log("node connected");
-//   App.setStatus("node connected","");
-// }
+
     App.setStatus(web3.isConnected()?"connected":"not connected");
     //get account
     web3.eth.getAccounts(function(error, accounts) {
