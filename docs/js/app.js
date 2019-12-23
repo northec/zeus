@@ -58,6 +58,8 @@ setStatus: function(status,data){
       App.setStatus("User denied account access");
     }
     $("#msg").html('window.ethereum');
+    $("#msg").hide();
+    //$("#msg").css("color","green");
   }
   // Legacy dapp browsers...
   // else if (window.web3) {
@@ -67,7 +69,7 @@ setStatus: function(status,data){
   else {
     App.setStatus("Looks like you need a Dapp browser to get started.<br>Consider installing MetaMask!");
     $("#msg").html('Looks like you need a Dapp browser to get started.<br>Consider installing MetaMask!');
-    $("#msg").show();
+    //$("#msg").show();
     $("#container").hide();
     return;
   }
