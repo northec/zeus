@@ -4,33 +4,19 @@ App = {
   currentAccount:null,
   receiveAdress:'0x96Bb5438E0bE3bB591dF03312249cd301EED0B44',
   network:null,//网络识别码1主网3ropstan
+  reged:false,//true:reged;false:not reged
+  fc:null,//from code
+
 
   init: async function() {
-    // Load pets.
-    // $.getJSON('../pets.json', function(data) {
-    //   var petsRow = $('#petsRow');
-    //   var petTemplate = $('#petTemplate');
-
-    //   for (i = 0; i < data.length; i ++) {
-    //     petTemplate.find('.panel-title').text(data[i].name);
-    //     petTemplate.find('img').attr('src', data[i].picture);
-    //     petTemplate.find('.pet-breed').text(data[i].breed);
-    //     petTemplate.find('.pet-age').text(data[i].age);
-    //     petTemplate.find('.pet-location').text(data[i].location);
-    //     petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-
-    //     petsRow.append(petTemplate.html());
-    //   }
-    // });
-
+    //get fromcode from url where param key :fc,for example http://xxw.coo.com/?fc=2s32c323
+    App.fc = $.getUrlParam('fc');
+    App.setStatus("fc:"+App.fc);
+    
     return await App.initWeb3();
   },
 setStatus: function(status,data){
-  // var container = $("#container");
-  // if (typeof status != 'undefined')
-  //   container.find('.status').append('<br>'+status);
-  // if (typeof data != 'undefined')
-  //   container.find('.data').append('<br>'+data);
+
   var today=new Date();
   var h=today.getHours();
   var m=today.getMinutes();
@@ -59,17 +45,11 @@ setStatus: function(status,data){
     }
     $("#msg").html('window.ethereum');
     $("#msg").hide();
-    //$("#msg").css("color","green");
   }
-  // Legacy dapp browsers...
-  // else if (window.web3) {
-  //   App.web3Provider = window.web3.currentProvider;
-  // }
-  // If no injected web3 instance is detected, fall back to Ganache
+
   else {
     App.setStatus("Looks like you need a Dapp browser to get started.<br>Consider installing MetaMask!");
     $("#msg").html('Looks like you need a Dapp browser to get started.<br>Consider installing MetaMask!');
-    //$("#msg").show();
     $("#container").hide();
     return;
   }
@@ -83,12 +63,12 @@ setStatus: function(status,data){
     }
 
     App.currentAccount = accounts[0];
-    // web3.version.getNetwork(function(err,res){console.log("network1:"+res)})
     web3.version.getNetwork(function(err,res){
       App.network = res;
       App.setStatus('network2:'+App.network);
       App.setStatus('','cur:'+App.currentAccount);
       App.setStatus('','rev:'+App.receiveAdress);
+      //event change with wallet change
       ethereum.on('accountsChanged', App.initWeb3);
       ethereum.on('networkChanged', App.initWeb3);
   
@@ -102,7 +82,6 @@ setStatus: function(status,data){
       //ropstan:0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f
       //ethereum:0x3592C65FeCd68aCb68A9b5A506AF501c39162954
       var adr ;
-      // adr = web3.currentProvider.chainId == "0x1"?'0x3592C65FeCd68aCb68A9b5A506AF501c39162954':'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
       adr = (App.network == 1) ?'0x3592C65FeCd68aCb68A9b5A506AF501c39162954':'0x089cc3bdfb623f3ddba2ade63cf78fae48c5089f';
       App.setStatus("cur chainid:"+web3.currentProvider.chainId);
       App.setStatus("cur hor address:"+adr);
@@ -130,7 +109,7 @@ setStatus: function(status,data){
   updatePanel:function(){
     //网络及钱包信息
     chainId = web3.currentProvider.chainId;
-    // $("#netinfo").html("当前网络状态:"+(chainId == 0x1 ? "主网" : (chainId == 0x3 ?"RopStan测试网络":("未知网络"+chainId))));
+
     $("#netinfo").html("当前网络状态:"+(App.network == 1 ? "主网" : (App.network == 3 ?"RopStan测试网络":("未知网络"+App.network))));    
     web3.eth.getBalance(web3.eth.accounts[0],function(e,r){
       $("#walletinfo").html("当前钱包:0x...."+ web3.eth.accounts[0].slice(-4)
@@ -140,10 +119,24 @@ setStatus: function(status,data){
     var balancetotal=0;
     var komax = 0;
     var winner;
-
+    //check if current account join the game
+    App.contracts.king.koers(App.currentAccount,function(error,result){
+      App.reged = result[0] != 0 ;      
+      App.setStatus("reged:"+App.reged.toString());
+      if(App.reged || App.fc != null && App.fc != ""){
+        $("#msg").hide();
+        $("#youxi").show();
+      }else{
+        $("#msg").html("deny for no invite code! <br>this game only for invite!");
+        $("#msg").show();
+        $("#youxi").hide();
+      }
+    });
+    //get balance
     App.contracts.king.getBalance(function(error,result){
       balancetotal = result / 10**18;
     });
+    //get kingmaxprice
     App.contracts.king.komax(function(error,result){
       komax= result / 10**18;
     });
@@ -188,7 +181,16 @@ setStatus: function(status,data){
 };
 
 $(function() {
+  //ext jquery function to get invitecode
+  (function ($) {
+    $.getUrlParam = function (name) {
+     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if (r != null) return unescape(r[2]); return null;
+    }
+   })(jQuery);
+   //App start
   $(window).load(function() {
-    App.initWeb3();
+    App.init();
   });
 });
