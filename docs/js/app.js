@@ -102,8 +102,8 @@ setStatus: function(status,data){
   },
   bindEvents: function() {
     
-    $(document).on('click', '.btn', App.handleNotice);
-    $(document).on('click', '.btn_HOR', App.handleRecharge);
+    $(document).on('click', '.btn', App.handleETH);
+    $(document).on('click', '.btn_HOR', App.handleHOR);
     $(document).on('click', '.btnKO', App.handleKO); 
   },
   updatePanel:function(){
@@ -160,7 +160,7 @@ setStatus: function(status,data){
       App.updatePanel();
     });    
   },
-  handleNotice: function(){
+  handleETH: function(){
     // ETH充值
     var value = $('#ipt').val()*10**18;
     web3.eth.sendTransaction({
@@ -171,7 +171,7 @@ setStatus: function(status,data){
       App.setStatus(result);
     })
   },
-  handleRecharge: function(event) {
+  handleHOR: function(event) {
     var value = $('#ipt').val()*10**8;
     App.setStatus(value);
     App.contracts.HourToken.transfer(App.receiveAdress,value,function(error,result){
